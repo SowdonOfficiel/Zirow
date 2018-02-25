@@ -5,7 +5,7 @@ const bot = new Discord.Client({disableEveryone: true});
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.2', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.3', type: 0} });
 });
 
 bot.on("message", async message => {
@@ -26,23 +26,63 @@ bot.on("message", async message => {
   }
 
   if(cmd == `${prefix}help`){
-    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
+    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -bot : permet d'obtenir des informations sur le bot \n -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
   }
 
   if(cmd == `${prefix}bot`){
     let bicon = bot.user.displayAvatarURL;
     let botembed = new Discord.RichEmbed()
-    .setDescription("Information concernant **Zirow** \n Développé par : **Sowdon** \n Version : **ALPHA-0.2")
+    .setDescription("Information concernant **Zirow** \n Développé par : **Sowdon** \n Version : **ALPHA-0.3")
     .setColor("#15f153")
     .setThumbnail(bicon)
     .addField("Crée le :", bot.user.createdAt);
 
   }
 
+  //Autobannisement pour certain mot
+
   if (message.content === 'tg' || message.content == 'Tg' || message.content == 'TG') {
     message.delete();
-    message.author.send('Le mot **tg** est banni !');
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **tg** est banni !');
   }
+
+  if (message.content === 'pute' || message.content == 'Pute' || message.content == 'PUTE') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **pute** est banni !');
+  }
+
+  if (message.content === 'fdp' || message.content == 'FDP' || message.content == 'fils de pute') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **fdp** est banni !');
+  }
+
+  if (message.content === 'salope' || message.content == 'Salope' || message.content == 'SALOPE') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **salope** est banni !');
+  }
+
+  if (message.content === 'ntm' || message.content == 'NTM' || message.content == 'nique ta mère') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **ntm** est banni !');
+  }
+
+  if (message.content === 'connard' || message.content == 'Connard' || message.content == 'CONNARD') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **connard** est banni !');
+  }
+
+  if (message.content === 'vagin' || message.content == 'Vagin' || message.content == 'VAGIN') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **vagin** est banni !');
+  }
+
+  if (message.content === 'kikou' || message.content == 'Kikou' || message.content == 'KIKOU') {
+    message.delete();
+    message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **kikou** est banni !');
+  }
+
+
+
 
   if(cmd == `${prefix}info`){
     let sicon = message.guild.iconURL;

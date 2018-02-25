@@ -24,6 +24,19 @@ bot.on("message", async message => {
   if (message.content === 'hey') {
     message.channel.send('coucou');
   }
+  
+  if(cmd == `${prefix}info`){
+    let sicon = message.guild.displayAvatarURL;
+    let serverembed = new Discord.RichEmbed()
+    .setDescription("Information concernant le discord", message.guild.name)
+    .setColor("#15f153")
+    .setThumbnail(sicon)
+    .addField("Membre :", message.guild.memberCount)
+    .addField("Crée le:", message.guild.createdAt)
+    .addField("Vous avez rejoint le discord le", message.member.joinedAt);
+
+    return message.channel.send(serverembed);
+  }
 
   if(cmd == `${prefix}help`){
     message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");

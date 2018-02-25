@@ -43,7 +43,7 @@ bot.on("message", async message => {
     if(!args[2]) return message.reply("Merci de poser une question fun !");
     let replies = ["Oui.", "Non.", "Je ne sais pas", "je suis trop fatiguer pour répondre, repose la question plus-tard."];
 
-    let result = Math.floor(Math.random() * replies.lenght));
+    let result = Math.floor((Math.random() * replies.lenght));
     let question = args.slice(1).join(" ");
 
     let responseembed = Discord.RichEmbed()

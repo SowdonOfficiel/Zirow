@@ -17,18 +17,47 @@ bot.on("message", async message => {
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
-  if (message.content === 'ping') {
-    message.channel.send('pong', message.author.ping);
+  if (message.content === 'ping' || message.content == 'Ping') {
+    message.channel.send('pong');
   }
 
   if (message.content === 'hey') {
     message.channel.send('coucou');
   }
-  
+
+  if(cmd == `${prefix}help`){
+    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
+  }
+
+  if(cmd == `${prefix}bot`){
+    let bicon = bot.user.displayAvatarURL;
+    let botembed = new Discord.RichEmbed()
+    .setDescription("Information concernant **Zirow** \n Développé par : **Sowdon** \n Version : **ALPHA-0.2")
+    .setColor("#15f153")
+    .setThumbnail(bicon)
+    .addField("Crée le :", bot.user.createdAt);
+
+  }
+
+  if(cmd == `${prefix}question`){
+    if(!args[2]) return message.reply("Merci de poser une question fun !");
+    let replies = ["Oui.", "Non.", "Je ne sais pas", "je suis trop fatiguer pour répondre, repose la question plus-tard."];
+
+    let result = Math.floor(Math.random() * replies.lenght));
+    let question = args.slice(1).join(" ");
+
+    let responseembed = Discord.RichEmbed()
+    .setAuthor(message.author.tag)
+    .addField("Question :", question)
+    .addField("Reéponse :", replies[result]);
+
+    message.channel.send(responseembed);
+  }
+
   if(cmd == `${prefix}info`){
-    let sicon = message.guild.displayAvatarURL;
+    let sicon = message.guild.iconURL;
     let serverembed = new Discord.RichEmbed()
-    .setDescription("Information concernant le discord", message.guild.name)
+    .setDescription("Information concernant le discord")
     .setColor("#15f153")
     .setThumbnail(sicon)
     .addField("Membre :", message.guild.memberCount)
@@ -36,10 +65,6 @@ bot.on("message", async message => {
     .addField("Vous avez rejoint le discord le", message.member.joinedAt);
 
     return message.channel.send(serverembed);
-  }
-
-  if(cmd == `${prefix}help`){
-    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
   }
 
   if(cmd == `${prefix}discord`){

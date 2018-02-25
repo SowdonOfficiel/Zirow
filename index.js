@@ -18,7 +18,7 @@ bot.on("message", async message => {
   let args = messageArray.slice(1);
 
   if (message.content === 'ping') {
-    message.channel.send('pong');
+    message.channel.send('pong', message.author.ping);
   }
 
   if (message.content === 'hey') {

@@ -39,9 +39,9 @@ bot.on("message", async message => {
 
   }
 
-  if(msg.includes('tg')){
+  if(message.includes('tg')){
     message.delete();
-    message.author.send('Le mot **tg** est banni !')
+    message.author.send('Le mot **tg** est banni !');
   }
 
   if(cmd == `${prefix}info`){

@@ -39,7 +39,7 @@ bot.on("message", async message => {
 
   }
 
-  if(message.includes('tg')){
+  if (message.content === 'tg' || message.content == 'Tg' || message.content == 'TG') {
     message.delete();
     message.author.send('Le mot **tg** est banni !');
   }

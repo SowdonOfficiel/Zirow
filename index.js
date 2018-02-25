@@ -46,10 +46,12 @@ bot.on("message", async message => {
     let result = Math.floor((Math.random() * replies.lenght));
     let question = args.slice(1).join(" ");
 
-    let responseembed = Discord.RichEmbed()
+    let responseembed = new Discord.RichEmbed()
     .setAuthor(message.author.tag)
     .addField("Question :", question)
     .addField("Reéponse :", replies[result]);
+
+    message.delete().catch(O_o=>{});
 
     message.channel.send(responseembed);
   }

@@ -39,21 +39,9 @@ bot.on("message", async message => {
 
   }
 
-  if(cmd == `${prefix}question`){
-    if(!args[2]) return message.reply("Merci de poser une question fun !");
-    let replies = ["Oui.", "Non.", "Je ne sais pas", "je suis trop fatiguer pour répondre, repose la question plus-tard."];
-
-    let result = Math.floor((Math.random() * replies.lenght));
-    let question = args.slice(1).join(" ");
-
-    let responseembed = new Discord.RichEmbed()
-    .setAuthor(message.author.tag)
-    .addField("Question :", question)
-    .addField("Reéponse :", replies[result]);
-
-    message.delete().catch(O_o=>{});
-
-    message.channel.send(responseembed);
+  if(msg.includes('tg')){
+    message.delete();
+    message.author.send('Le mot **tg** est banni !')
   }
 
   if(cmd == `${prefix}info`){

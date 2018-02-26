@@ -5,7 +5,7 @@ const bot = new Discord.Client({disableEveryone: true});
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.3', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.3.1', type: 0} });
 });
 
 bot.on("message", async message => {
@@ -26,17 +26,7 @@ bot.on("message", async message => {
   }
 
   if(cmd == `${prefix}help`){
-    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -bot : permet d'obtenir des informations sur le bot \n -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
-  }
-
-  if(cmd == `${prefix}bot`){
-    let bicon = bot.user.displayAvatarURL;
-    let botembed = new Discord.RichEmbed()
-    .setDescription("Information concernant **Zirow** \n Développé par : **Sowdon** \n Version : **ALPHA-0.3")
-    .setColor("#15f153")
-    .setThumbnail(bicon)
-    .addField("Crée le :", bot.user.createdAt);
-
+    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -bot : permet d'obtenir des informations sur le bot \n > -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
   }
 
   //Autobannisement pour certain mot
@@ -306,4 +296,4 @@ bot.on("message", async message => {
     randnum = Math.floor(Math.random() * (max - min +1) + min);
   }
 
-bot.login(botconfig.token);
+bot.login(process.env.TOKEN);

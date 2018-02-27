@@ -1,10 +1,30 @@
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
-
 const bot = new Discord.Client({disableEveryone: true});
+const API_KEY = 'dc6zaTOxFJmzC';
+const got = require('got');
+const fs = require("fs");
+bot.commands = new Discord.Collection();
+
+fs.readdir("./commands/", (err, files) => {
+
+  if(err) console.log(err);
+
+  let jsfile = files.filter(f => f.split(".").pop() === "js")
+  if(jsfile.lenght <= 0){
+    console.log("Impossible de trouver le dossier commandes");
+    return;
+  }
+
+  jsfile.forEach((f, i) => {
+    let props = require(`./commands/${f}`);
+    console.log(`${f} loaded!`);
+    bot.commands.set(props.help.name, props);
+  })
+})
 
 bot.on("ready", async () => {
-  console.log(`${bot.user.username} est connecte`);
+  console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
   bot.user.setPresence({game: { name: 'Version : ALPHA-0.3.1', type: 0} });
 });
 
@@ -17,16 +37,15 @@ bot.on("message", async message => {
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
+  let commandfile = bot.commands.get(cmd.slice(prefix.lenght));
+  if(commandfile) commandfile.run(bot,message,args);
+
   if (message.content === 'ping' || message.content == 'Ping') {
     message.channel.send('pong');
   }
 
   if (message.content === 'hey') {
     message.channel.send('coucou');
-  }
-
-  if(cmd == `${prefix}help`){
-    message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -bot : permet d'obtenir des informations sur le bot \n > -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
   }
 
   //Autobannisement pour certain mot
@@ -69,139 +88,6 @@ bot.on("message", async message => {
   if (message.content === 'kikou' || message.content == 'Kikou' || message.content == 'KIKOU') {
     message.delete();
     message.author.send('**[WARN]** > Pour des raisons de sécurité, le mot **kikou** est banni !');
-  }
-
-
-
-
-  if(cmd == `${prefix}info`){
-    let sicon = message.guild.iconURL;
-    let serverembed = new Discord.RichEmbed()
-    .setDescription("Information concernant le discord")
-    .setColor("#15f153")
-    .setThumbnail(sicon)
-    .addField("Membre :", message.guild.memberCount)
-    .addField("Crée le:", message.guild.createdAt)
-    .addField("Vous avez rejoint le discord le", message.member.joinedAt);
-
-    return message.channel.send(serverembed);
-  }
-
-  if(cmd == `${prefix}discord`){
-    message.reply("**Voici le discord de** *Zirow* : **https://discord.gg/Rb32qkX");
-  }
-
-  if(cmd == `${prefix}say`){
-    if(message.member.id !== "361495811554803713"){
-      message.reply("Vous n'avez pas la permission de faire parler le bot !");
-      return;
-    } else {
-      //if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour faire parler le bot !");
-      let botmessage = args.join(" ");
-      message.delete().catch();
-      message.channel.send(botmessage);
-    }
-
-  }
-
-  if(cmd === `${prefix}report`){
-
-    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if(!rUser) return message.channel.send("Impossible de trouver l'utilisateur !");
-    let reason = args.join(" ").slice(22);
-
-    let reportEmbed = new Discord.RichEmbed()
-    .setDescription("Reports")
-    .setColor("#15f153")
-    .addField("User", `${rUser} with ID: ${rUser.id}`)
-    .addField("Report by", `${message.author} with ID: ${message.author.id}`)
-    .addField("Raison", reason)
-    .addField("Channel", message.channel)
-    .addField("Time", message.createdAt);
-
-    let reportschannel = message.guild.channels.find(`name`, `reports`);
-    if(!reportschannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
-
-    message.delete().catch(O_o=>{});
-
-    reportschannel.send(reportEmbed);
-
-    return;
-
-
-
-
-
-  }
-
-  if(cmd == `${prefix}kick`){
-
-    let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if(!kUser) return message.channel.send("Impossible de trouver l'utilisateur !");
-    let kReason = args.join(" ").slice(22);
-    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour kick !");
-    if(kUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous ne pouvez pas kick cette utilisateur !");
-
-    let kickEmbed = new Discord.RichEmbed()
-    .setDescription("๑۩۞۩๑ LOG - Kick (Discord) ๑۩۞۩๑")
-    .setColor("#e56b00")
-    .addField("Kick user", `${kUser} with ID ${kUser.id}`)
-    .addField("Kick by", `<@${message.author.id}> with ID ${message.author.id}`)
-    .addField("Raison", kReason)
-    .addField("Time", message.createdAt);
-
-    //message.guild.member(kUser).sendMessage("Vous avez était kick du discord de **MinithMc** ! Pour :", kReason);
-
-    let logchannel = message.guild.channels.find(`name`, `logs`);
-    if(!logchannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
-
-    message.delete().catch(O_o=>{});
-
-    message.guild.member(kUser).kick(kReason);
-    logchannel.send(kickEmbed);
-
-
-    return;
-
-  }
-
-  if(cmd === `${prefix}ban`){
-    let bUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if(!bUser) return message.channel.send("Impossible de trouver l'utilisateur !");
-    let bReason = args.join(" ").slice(22);
-    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour ban !");
-    if(bUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous ne pouvez pas ban cette utilisateur !");
-
-    let banEmbed = new Discord.RichEmbed()
-    .setDescription("๑۩۞۩๑ LOG - BAN (Discord) ๑۩۞۩๑")
-    .setColor("#bc0000")
-    .addField("Ban user", `${bUser} with ID ${bUser.id}`)
-    .addField("Ban by", `<@${message.author.id}> with ID ${message.author.id}`)
-    .addField("Raison", bReason)
-    .addField("Time", message.createdAt);
-
-    //message.guild.member(bUser).send("Vous avez était ban du discord de **MinithMc** ! Pour :", bReason);
-
-    let logchannel = message.guild.channels.find(`name`, `logs`);
-    if(!logchannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
-
-    message.delete().catch(O_o=>{});
-
-    message.guild.member(bUser).ban(bReason);
-    logchannel.send(banEmbed);
-
-
-    return;
-  }
-
-  if(cmd == `${prefix}clear`){
-    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour clear !");
-    if(!args[0]) return message.channel.send("Vous devez préciser combien de message je dois clear !");
-    message.channel.bulkDelete(args[0]).then(() => {
-      message.channel.send(`Clear de ${args[0]} messages.`).then(msg => msg.delete(5000));
-  })
-
-  return;
   }
 
   if(message.content === "Raconte moi une blague" || message.content === "dis moi une blague MinithMc" || message.content === "raconte moi une blague"){

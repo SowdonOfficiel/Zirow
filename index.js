@@ -18,13 +18,15 @@ fs.readdir("./commands/", (err, files) => {
     let props = require(`./commands/${f}`);
     console.log(`${f} loaded!`);
     bot.commands.set(props.help.name, props);
-  })
-})
+  });
+});
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
   bot.user.setPresence({game: { name: 'Version : ALPHA-0.3.1', type: 0} });
 });
+
+
 
 bot.on("message", async message => {
   if(message.author.bot) return;

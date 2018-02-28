@@ -9,6 +9,13 @@
   "author": "Sowdon",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.3.0"
+    "country-data": "0.0.31",
+    "discord.js": "^11.3.0",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "got": "^8.2.0",
+    "opusscript": "0.0.6",
+    "ytdl-core": "^0.20.2"
   }
 }
+
+

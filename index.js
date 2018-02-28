@@ -47,7 +47,7 @@ createServer((_, res) => {
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.4', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.4.1', type: 0} });
 });
 
 

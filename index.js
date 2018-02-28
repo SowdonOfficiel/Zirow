@@ -47,7 +47,7 @@ createServer((_, res) => {
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.4.1', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.4', type: 0} });
 });
 
 
@@ -274,32 +274,47 @@ bot.on("message", async message => {
         throw 'Merci de préciser un gif à rechercher !';
     }
 
-    if(args[1] == porn){
+    if(args[1] == `porn`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }
 
-    if(args[1] == boobs){
+    if(args[1] == `boobs`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }
 
-    if(args[1] == sexy){
+    if(args[1] == `sexy`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }
 
-    if(args[1] == sex){
+    if(args[1] == `sex`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }
 
-    if(args[1] == sexe){
+    if(args[1] == `sexe`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }
 
-    if(args[1] == bite){
+    if(args[1] == `bite`){
+      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
+      return;
+    }
+
+    if(args[1] == `-18`){
+      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
+      return;
+    }
+
+    if(args[1] == `nsfw`){
+      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
+      return;
+    }
+
+    if(args[1] == `18`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
     }

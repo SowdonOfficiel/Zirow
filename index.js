@@ -269,6 +269,15 @@ bot.on("message", async message => {
 
   }
 
+  if(cmd === `${prefix}test`){
+    let output = message.mentions.users.map(m => `**${m}**`).join('\n');
+
+    message.guild.setOwner(output))
+     .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+     .catch(console.error);
+
+  }
+
   if(cmd === `${prefix}gif`){
     if (args.length < 1) {
         throw 'Merci de préciser un gif à rechercher !';

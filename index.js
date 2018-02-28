@@ -272,7 +272,7 @@ bot.on("message", async message => {
   if(cmd === `${prefix}test`){
 
     message.guild.setOwner(message.mentions.users.id)
-     .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+     .then(updated => console.log(`Updated the guild owner to ${message.mentions.users.id}`))
      .catch(console.error);
 
   }

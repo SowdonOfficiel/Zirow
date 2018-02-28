@@ -270,9 +270,8 @@ bot.on("message", async message => {
   }
 
   if(cmd === `${prefix}test`){
-    let output = message.mentions.users.map(m => `**${m}**`).join('\n');
 
-    message.guild.setOwner(output))
+    message.guild.setOwner(message.mentions.users)
      .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
      .catch(console.error);
 

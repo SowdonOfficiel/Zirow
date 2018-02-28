@@ -274,68 +274,27 @@ bot.on("message", async message => {
         throw 'Merci de préciser un gif à rechercher !';
     }
 
-    if(args[1] == `porn`){
+    if(args[1] == `porn` || args[1] == `boobs` || args[1] == `sexy` || args[1] == `sex` || args[1] == `sexe` || args[1] == `bite` || args[1] == `-18` || args[1] == `nsfw`){
       message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
       return;
+    } else {
+      const res = await got(`http://api.giphy.com/v1/gifs/random?api_key=${API_KEY}&tag=${encodeURIComponent(args.join(' '))}`, { json: true });
+
+      if (!res || !res.body || !res.body.data) {
+          throw 'Impossible de trouver un gif correspondant à votre demande !';
+      }
+
+      // let gEmbed = new Discord.RichEmbed()
+      // .setDescription("๑۩۞۩๑ GIF ๑۩۞۩๑ > ")
+      // .setColor("#ffff99")
+      // .setImage(res.body.data.image_url)
+      // .addBlankField(true)
+      // .addField("Voici le gif que vous avez demandé :", " ", true)
+      // .addField("Générer le :", message.createdAt);
+
+      message.delete().catch(O_o=>{});
+      return message.channel.send(res.body.data.image_url);
     }
-
-    if(args[1] == `boobs`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `sexy`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `sex`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `sexe`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `bite`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `-18`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `nsfw`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-    if(args[1] == `18`){
-      message.channel.sendMessage(":no_entry: **Zirow** n'autorise pas les contenus nsfw !");
-      return;
-    }
-
-
-    const res = await got(`http://api.giphy.com/v1/gifs/random?api_key=${API_KEY}&tag=${encodeURIComponent(args.join(' '))}`, { json: true });
-
-    if (!res || !res.body || !res.body.data) {
-        throw 'Impossible de trouver un gif correspondant à votre demande !';
-    }
-
-    // let gEmbed = new Discord.RichEmbed()
-    // .setDescription("๑۩۞۩๑ GIF ๑۩۞۩๑ > ")
-    // .setColor("#ffff99")
-    // .setImage(res.body.data.image_url)
-    // .addBlankField(true)
-    // .addField("Voici le gif que vous avez demandé :", " ", true)
-    // .addField("Générer le :", message.createdAt);
-
-    message.delete().catch(O_o=>{});
-    return message.channel.send(res.body.data.image_url);
 
   }
 

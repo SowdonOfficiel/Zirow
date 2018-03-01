@@ -13,6 +13,7 @@ const mapping = '¡"#$%⅋,)(*+\'-˙/0ƖᄅƐㄣϛ9ㄥ86:;<=>?@∀qƆpƎℲפHI�
 const makeURL = (city) => `https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22${encodeURIComponent(city)}%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys`;
 const celsius = (fahrenheit) => Math.round(((fahrenheit - 32) * 5) / 9);
 bot.commands = new Discord.Collection();
+let coins = require("./coins.json");
 
 const spacer = {
     name: '\u200b',
@@ -56,10 +57,36 @@ bot.on("message", async message => {
   if(message.author.bot) return;
   if(message.channel.type === "dm") return;
 
+  if(!coins[message.author.id]){
+    coins[message.author.id] = {
+      coins: 0
+    };
+  }
+
+  let coinAmt = Math.floor(Math.random() * 15) + 1;
+  let baseAmt = Math.floor(Math.random() * 15) + 1;
+
+  if(coinAmt === baseAmt){
+    coins[message.author.id] = {
+      coins: coins[message.author.id].coins + coinAmt
+    };
+  fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
+    if (err) console.log(err)
+  });
+  let coinEmbed = new Discord.RichEmbed()
+  .setAuthor(message.author.username)
+  .setColor("#0000FF")
+  .addField("💸", `${coinsAmt} coins ajouté`);
+
+  message.channel.send(coinEmbed).then(msg => {msg.delete(5000)})
+  }
+
   let prefix = botconfig.prefix;
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
+
+
 
   // let commandfile = bot.commands.get(cmd.slice(prefix.lenght));
   // if(commandfile) commandfile.run(bot,message,args);
@@ -122,6 +149,24 @@ bot.on("message", async message => {
       message.channel.send(botmessage);
     }
 
+  }
+
+  if(cmd === `${prefix}coins`){
+    if(!coins[message.author.id]){
+      coins[message.author.id] = {
+        coins: 0
+      };;
+    }
+
+    let uCoins = coins[message.author.id].coins;
+    let picon = message.author.avatarURL;
+
+    let coinEmbed = new Discord.RichEmbed()
+    .setColor("#00FF00")
+    .setThumbnail(picon)
+    .addField("💸 Vous avez " + uCoins + " coins sur votre compte.");
+
+    message.channel.send(coinEmbed);
   }
 
   if(cmd === `${prefix}report`){
@@ -192,7 +237,7 @@ bot.on("message", async message => {
   }
 
   if(cmd === `${prefix}help`){
-      message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -avatar @lapersonne : permet d'obtenir l'avatar d'un personne. \n > -gif <type de gif> : permet de générer un gif aléatoirement. \n > -shoot @lapersonne : permet de tuer la personne [FUN] \n > -météo votreville : permet d'obtenir la météo de votre ville. \n -bot : permet d'obtenir des informations sur le bot \n > -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
+      message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -avatar @lapersonne : permet d'obtenir l'avatar d'un personne. \n > -gif <type de gif> : permet de générer un gif aléatoirement. \n > -shoot @lapersonne : permet de tuer la personne [FUN] \n > -météo votreville : permet d'obtenir la météo de votre ville. \n > -bot : permet d'obtenir des informations sur le bot \n > -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
   }
 
   if(cmd === `${prefix}discord`){

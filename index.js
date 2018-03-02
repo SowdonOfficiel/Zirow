@@ -16,6 +16,7 @@ bot.commands = new Discord.Collection();
 let coins = require("./coins.json");
 const Fortnite = require('fortnite');
 const stats = new Fortnite(process.env.TRN);
+const ms = require("ms");
 
 const spacer = {
     name: '\u200b',
@@ -50,7 +51,7 @@ createServer((_, res) => {
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.4', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.5', type: 0} });
 });
 
 
@@ -102,43 +103,43 @@ bot.on("message", async message => {
     message.channel.send('coucou');
   }
 
-  if(cmd === `${prefix}play`){
-    if(!args[0]) {
-      message.channel.sendMessage("Merci de préciser un lien !");
-      return;
-    }
-
-    if(!message.member.voiceChannel){
-      message.channel.sendMessage("Merci de vous connecter dans un channel vocal !");
-      return;
-    }
-
-    if(!servers[message.guild.id]) servers[message.guild.id] = {
-      queue: []
-    };
-
-    var server = servers[message.guild.id];
-
-    server.queue.push(args[1]);
-
-    if(!message.guild.VoiceConnection) message.member.voiceChannel.join().then(function(connection){
-      play(connection, message);
-    });
-
-  }
-
-
-  if(cmd === `${prefix}skip`){
-    var server = servers[message.guild.id];
-
-    if(server.dispatcher) server.dispatcher.end();
-  }
-
-  if(cmd === `${prefix}stop`){
-    var server = servers[message.guild.id];
-
-    if(message.guild.VoiceConnection) message.guild.VoiceConnection.disconnect();
-  }
+  // if(cmd === `${prefix}play`){
+  //   if(!args[0]) {
+  //     message.channel.sendMessage("Merci de préciser un lien !");
+  //     return;
+  //   }
+  //
+  //   if(!message.member.voiceChannel){
+  //     message.channel.sendMessage("Merci de vous connecter dans un channel vocal !");
+  //     return;
+  //   }
+  //
+  //   if(!servers[message.guild.id]) servers[message.guild.id] = {
+  //     queue: []
+  //   };
+  //
+  //   var server = servers[message.guild.id];
+  //
+  //   server.queue.push(args[1]);
+  //
+  //   if(!message.guild.VoiceConnection) message.member.voiceChannel.join().then(function(connection){
+  //     play(connection, message);
+  //   });
+  //
+  // }
+  //
+  //
+  // if(cmd === `${prefix}skip`){
+  //   var server = servers[message.guild.id];
+  //
+  //   if(server.dispatcher) server.dispatcher.end();
+  // }
+  //
+  // if(cmd === `${prefix}stop`){
+  //   var server = servers[message.guild.id];
+  //
+  //   if(message.guild.VoiceConnection) message.guild.VoiceConnection.disconnect();
+  // }
 
 
   if(cmd === `${prefix}say`){
@@ -228,10 +229,10 @@ bot.on("message", async message => {
     .setDescription("Information concernant le discord")
     .setColor("#15f153")
     .setThumbnail(sicon)
-    .addField("Membre :", message.guild.memberCount)
-    .addField("Crée le:", message.guild.createdAt)
-    .addField("Region:", message.guild.region)
-    .addField("Owner", message.guild.owner.user)
+    .addField("🔷 Membre :", message.guild.memberCount)
+    .addField("🔨 Crée le:", message.guild.createdAt)
+    .addField(":flag_white: Region:", message.guild.region)
+    .addField("🔖 Owner", message.guild.owner.user)
     .addField("Vous avez rejoint le discord le", message.member.joinedAt)
     .addField("ID", message.guild.id);
 
@@ -240,11 +241,26 @@ bot.on("message", async message => {
   }
 
   if(cmd === `${prefix}help`){
-      message.reply("```Les commandes : \n > -help : permet d'obtenir de l'aide. \n > -avatar @lapersonne : permet d'obtenir l'avatar d'un personne. \n > -gif <type de gif> : permet de générer un gif aléatoirement. \n > -shoot @lapersonne : permet de tuer la personne [FUN] \n > -météo votreville : permet d'obtenir la météo de votre ville. \n > -bot : permet d'obtenir des informations sur le bot \n > -info : permet d'obtenir des informations sur le discord. \n > -discord : permet d'obtenir le discord de **Zirow**. \n > -ban @user *raison* : permet de bannir un utilisateur du discord. \n > -kick @user *raison* : permet de kick un utilisateur. \n > -clear *message* : permet de clear des messages. \n > -report @user *raison* : permet de report un utilisateur. \n ```");
+
+      let helpEmbed1 = new Discord.RichEmbed()
+      .setColor(0xffffff)
+      .setTitle(`Aide concernant Zirow (Partit 1) :`)
+      .setDescription(`**-help** \n *Permet d'obtenir cette aide.* \n\n \n\n **-mute @lapersonne <temps>** \n *Permet de mute quelqu'un temporairement.* \n\n **-kick @lapersonne <raison>** \n *Permet de kick quelqu'un du discord.* \n\n **-ban @lapersonne <raison>** \n *Permet de bannir quelqu'un du discord* \n\n **-clear <nb. message>** \n *Permet de clear des messages.* \n\n **-report @lapersonne <raison>** \n *Permet de report quelqu'un.* \n\n \n\n **-gif <type>** \n *Permet de générer un gif. \n\n **-shoot @lapersonne** \n *Permet de kill la personne. \n\n **-avatar @lapersonne** \n *Permet d'obtenir l'avatar de la personne* \n\n **-météo <la ville>** \n *Permet d'obtenir la météo de la ville / village.* \n\n **-fortnite @lapersonne** \n *Permet d'obtenir les statistiques fortnite de la personne.* \n\n **-spotify @lapersonne** \n *Permet d'obtenir des informations sur la musique d'un personne.* \n\n **-flip <text>** \n *Permet d'écrire à l'envers.*`);
+
+      message.author.send(helpEmbed1);
+
+      let helpEmbed2 = new Discord.RichEmbed()
+      .setColor(0xffffff)
+      .setTitle(`Aide concernant Zirow (Partit 2) :`)
+      .setDescription(`\n\n **-shorturl <url>** \n *Permet de réduire la taille de l'url.* \n\n **-info** \n *Permet d'obtenir des informations sur cette guild.* \n\n **-discord** \n *Permet d'obtenir le discord de Zirow*`);
+
+      message.author.send(helpEmbed2);
+
+      message.reply("Merci de regarder vos messages privées !");
   }
 
   if(cmd === `${prefix}discord`){
-    message.reply("**Voici le discord de** *Zirow* : **https://discord.me/zirow**");
+    message.author.send("**Voici le discord de** *Zirow* : **https://discord.me/zirow**");
   }
 
   if(cmd === `${prefix}clear`){
@@ -298,6 +314,20 @@ bot.on("message", async message => {
 
   }
 
+  if(cmd === `${prefix}shorturl`){
+    if (args.length < 1) {
+        throw 'Merci de préciser une url valide !';
+    }
+
+    const url = args.join(' ');
+
+    message.delete();
+
+    const res = await got(`http://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+
+    message.channel.send("Voilà votre nouvelle url :" + res.body);
+  }
+
   if(cmd === `${prefix}spotify`){
 
     let user = message.mentions.users.first() || message.author;
@@ -323,7 +353,7 @@ bot.on("message", async message => {
 
       } else {
 
-        message.channel.send('**This user isn\'t listening to Spotify!**');
+        message.channel.send('**Cette utilisateur n\'écoute pas de la musique actuellement !**');
 
       }
 
@@ -386,6 +416,41 @@ bot.on("message", async message => {
 
     message.delete().catch(O_o=>{});
     return message.channel.send(mEmbed);
+
+  }
+
+  if(cmd === `${prefix}mute`){
+    let tomute = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!tomute) return message.reply("Impossible de trouver l'utilisateur");
+    if(tomute.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous ne pouvez pas mute cette utilisateur");
+    let muterole = message.guild.roles.find(`name`, "mute");
+    if(!muterole){
+      try{
+        muterole = await message.guild.createRole({
+          name: "mute",
+          color: "#000000",
+          permissions:[]
+        })
+        message.guild.channels.forEach(async (channel, id) => {
+          await channel.overwritePermissions(muterole, {
+            SEND_MESSAGES: false,
+            ADD_REACTIONS: false
+          });
+        });
+      }catch(e){
+        console.log(e.stack);
+      }
+    }
+    let mutetime = args[1];
+    if(!mutetime) return message.reply("**Vous devez préciser un temps (-mute @Zirow 1m Flood)**");
+
+    await(tomute.addRole(muterole.id));
+    message.reply(`<@${tomute.id}> à bien été mute pendant ${ms(ms(mutetime))}`);
+
+    setTimeout(function(){
+      tomute.removeRole(muterole.id);
+      message.channel.send(`<@${tomute.id}> à été unmute !`);
+    }, ms(mutetime));
 
   }
 

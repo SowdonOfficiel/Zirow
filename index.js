@@ -178,7 +178,7 @@ bot.on("message", async message => {
     if(!rUser) return message.channel.send("Impossible de trouver l'utilisateur !");
     let reason = args.join(" ").slice(22);
 
-    let reportEmbed = new Discord.RichEmbed()
+    let reportEmbed = new Discord.MessageEmbed()
     .setDescription("Reports")
     .setColor("#15f153")
     .addField("User", `${rUser} with ID: ${rUser.id}`)
@@ -203,7 +203,7 @@ bot.on("message", async message => {
     if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour kick !");
     if(kUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous ne pouvez pas kick cette utilisateur !");
 
-    let kickEmbed = new Discord.RichEmbed()
+    let kickEmbed = new Discord.MessageEmbed()
     .setDescription("๑۩۞۩๑ LOG - Kick (Discord) ๑۩۞۩๑")
     .setColor("#e56b00")
     .addField("Kick user", `${kUser} with ID ${kUser.id}`)
@@ -225,7 +225,7 @@ bot.on("message", async message => {
 
   if(cmd === `${prefix}info`){
     let sicon = message.guild.iconURL;
-    let serverembed = new Discord.RichEmbed()
+    let serverembed = new Discord.MessageEmbed()
     .setDescription("Information concernant le discord")
     .setColor("#15f153")
     .setThumbnail(sicon)
@@ -242,14 +242,14 @@ bot.on("message", async message => {
 
   if(cmd === `${prefix}help`){
 
-      let helpEmbed1 = new Discord.RichEmbed()
+      let helpEmbed1 = new Discord.MessageEmbed()
       .setColor(0xffffff)
       .setTitle(`Aide concernant Zirow (Partit 1) :`)
       .setDescription(`**-help** \n *Permet d'obtenir cette aide.* \n\n \n\n **-mute @lapersonne <temps>** \n *Permet de mute quelqu'un temporairement.* \n\n **-kick @lapersonne <raison>** \n *Permet de kick quelqu'un du discord.* \n\n **-ban @lapersonne <raison>** \n *Permet de bannir quelqu'un du discord* \n\n **-clear <nb. message>** \n *Permet de clear des messages.* \n\n **-report @lapersonne <raison>** \n *Permet de report quelqu'un.* \n\n \n\n **-gif <type>** \n *Permet de générer un gif. \n\n **-shoot @lapersonne** \n *Permet de kill la personne. \n\n **-avatar @lapersonne** \n *Permet d'obtenir l'avatar de la personne* \n\n **-météo <la ville>** \n *Permet d'obtenir la météo de la ville / village.* \n\n **-fortnite @lapersonne** \n *Permet d'obtenir les statistiques fortnite de la personne.* \n\n **-spotify @lapersonne** \n *Permet d'obtenir des informations sur la musique d'un personne.* \n\n **-flip <text>** \n *Permet d'écrire à l'envers.*`);
 
       message.author.send(helpEmbed1);
 
-      let helpEmbed2 = new Discord.RichEmbed()
+      let helpEmbed2 = new Discord.MessageEmbed()
       .setColor(0xffffff)
       .setTitle(`Aide concernant Zirow (Partit 2) :`)
       .setDescription(`\n\n **-shorturl <url>** \n *Permet de réduire la taille de l'url.* \n\n **-info** \n *Permet d'obtenir des informations sur cette guild.* \n\n **-discord** \n *Permet d'obtenir le discord de Zirow*`);
@@ -366,7 +366,7 @@ bot.on("message", async message => {
     if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour ban !");
     if(bUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous ne pouvez pas ban cette utilisateur !");
 
-    let banEmbed = new Discord.RichEmbed()
+    let banEmbed = new Discord.MessageEmbed()
     .setDescription("๑۩۞۩๑ LOG - BAN (Discord) ๑۩۞۩๑")
     .setColor("#bc0000")
     .addField("Ban user", `${bUser} with ID ${bUser.id}`)
@@ -406,7 +406,7 @@ bot.on("message", async message => {
 
     const description = `La température dans ${weatherInfo.location.city} est de ${weatherInfo.item.condition.temp}°F/${celsius(weatherInfo.item.condition.temp)}°C`;
 
-    let mEmbed = new Discord.RichEmbed()
+    let mEmbed = new Discord.MessageEmbed()
     .setDescription("๑۩۞۩๑ Météo ๑۩۞۩๑ > " + description)
     .setColor("#ccccff")
     .addField("Condition", weatherInfo.item.condition.text)
@@ -505,7 +505,7 @@ bot.on("message", async message => {
 
     let output = message.mentions.users.map(m => `**${m}**`).join('\n');
 
-    let sEmbed = new Discord.RichEmbed()
+    let sEmbed = new Discord.MessageEmbed()
     .setDescription("๑۩۞۩๑ Combat ๑۩۞۩๑")
     .setColor("#ff9966")
     .addField(":gun: Tireur", message.author)

@@ -318,7 +318,7 @@ bot.on("message", async message => {
         .addField('Auteur :', trackAuthor, false)
         .addField('Écoute la piste :', `[\`${trackURL}\`](trackURL)`, false);
 
-      message.channel.send(ssembed):
+      message.channel.send(ssembed);
 
      
       } else {

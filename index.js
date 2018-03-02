@@ -325,7 +325,7 @@ bot.on("message", async message => {
 
     const res = await got(`http://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
 
-    message.channel.send("Voilà votre nouvelle url :" + res.body);
+    message.channel.send("Voilà votre nouvelle url : " + res.body);
   }
 
   if(cmd === `${prefix}spotify`){
@@ -424,23 +424,6 @@ bot.on("message", async message => {
     if(!tomute) return message.reply("Impossible de trouver l'utilisateur");
     if(tomute.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous ne pouvez pas mute cette utilisateur");
     let muterole = message.guild.roles.find(`name`, "mute");
-    if(!muterole){
-      try{
-        muterole = await message.guild.createRole({
-          name: "mute",
-          color: "#000000",
-          permissions:[]
-        })
-        message.guild.channels.forEach(async (channel, id) => {
-          await channel.overwritePermissions(muterole, {
-            SEND_MESSAGES: false,
-            ADD_REACTIONS: false
-          });
-        });
-      }catch(e){
-        console.log(e.stack);
-      }
-    }
     let mutetime = args[1];
     if(!mutetime) return message.reply("**Vous devez préciser un temps (-mute @Zirow 1m Flood)**");
 

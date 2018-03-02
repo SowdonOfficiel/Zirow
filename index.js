@@ -317,13 +317,28 @@ bot.on("message", async message => {
   if(cmd === `${prefix}andary`){
 
     const res = await got(`https://minecraft-api.com/api/ping/playeronline.php?ip=54.38.11.252&port=25565`);
+    const res1 = await got(`https://minecraft-api.com/api/ping/maxplayer.php?ip=54.38.11.252&port=25565`);
+    const res2 = await got(`https://minecraft-api.com/api/ping/ping.php?ip=54.38.11.252&port=25565`);
+    const res3 = await got(`https://minecraft-api.com/api/ping/version.php?ip=54.38.11.252&port=25565`);
 
     const andaryEmbed = new Discord.MessageEmbed()
     .setColor(0xffffff)
-    .setDescription(`Andary est un serveur PvpFaction. \n\n Joueurs connectées : **${res.body}**`);
+    .setDescription(`Andary est un serveur PvpFaction. \n\n Joueurs connectées : **${res.body}** / **${res1.body}** \n\n Temps de réponse d'andary : **${res2.body} ms** \n\n Version d'andary : **${res3.body}** \n\n\n\n Andary est partenariat avec Zirow.`);
     message.channel.send(andaryEmbed);
 
   }
+
+  if(cmd === `${prefix}mcskin`){
+    if (args.length < 1) {
+        throw 'Merci de préciser un pseudo !';
+    }
+
+    const res = await got(`http://minecraft-api.com/api/skins/skins.php?player=${args[1]}`);
+
+    message.delete().catch(O_o=>{});
+    return message.channel.send(res.body.data.image_url);
+  }
+  
 
   if(cmd === `${prefix}shorturl`){
     if (args.length < 1) {

@@ -314,6 +314,17 @@ bot.on("message", async message => {
 
   }
 
+  if(cmd === `${prefix}andary`){
+
+    const res = await got(`https://minecraft-api.com/api/ping/playeronline.php?ip=54.38.11.252&port=25565`);
+
+    const andaryEmbed = new Discord.MessageEmbed()
+    .setColor(0xffffff)
+    .setDescription(`Andary est un serveur PvpFaction. \n\n Joueurs connectées : **${res.body}**`);
+    message.channel.send(andaryEmbed);
+
+  }
+
   if(cmd === `${prefix}shorturl`){
     if (args.length < 1) {
         throw 'Merci de préciser une url valide !';

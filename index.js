@@ -102,43 +102,43 @@ bot.on("message", async message => {
     message.channel.send('coucou');
   }
 
-  // if(cmd === `${prefix}play`){
-  //   if(!args[0]) {
-  //     message.channel.sendMessage("Merci de préciser un lien !");
-  //     return;
-  //   }
-  //
-  //   if(!message.member.voiceChannel){
-  //     message.channel.sendMessage("Merci de vous connecter dans un channel vocal !");
-  //     return;
-  //   }
-  //
-  //   if(!servers[message.guild.id]) servers[message.guild.id] = {
-  //     queue: []
-  //   };
-  //
-  //   var server = servers[message.guild.id];
-  //
-  //   server.queue.push(args[1]);
-  //
-  //   if(!message.guild.VoiceConnection) message.member.voiceChannel.join().then(function(connection){
-  //     play(connection, message);
-  //   });
-  //
-  // }
-  //
-  //
-  // if(cmd === `${prefix}skip`){
-  //   var server = servers[message.guild.id];
-  //
-  //   if(server.dispatcher) server.dispatcher.end();
-  // }
-  //
-  // if(cmd === `${prefix}stop`){
-  //   var server = servers[message.guild.id];
-  //
-  //   if(message.guild.VoiceConnection) message.guild.VoiceConnection.disconnect();
-  // }
+  if(cmd === `${prefix}play`){
+    if(!args[0]) {
+      message.channel.sendMessage("Merci de préciser un lien !");
+      return;
+    }
+
+    if(!message.member.voiceChannel){
+      message.channel.sendMessage("Merci de vous connecter dans un channel vocal !");
+      return;
+    }
+
+    if(!servers[message.guild.id]) servers[message.guild.id] = {
+      queue: []
+    };
+
+    var server = servers[message.guild.id];
+
+    server.queue.push(args[1]);
+
+    if(!message.guild.VoiceConnection) message.member.voiceChannel.join().then(function(connection){
+      play(connection, message);
+    });
+
+  }
+
+
+  if(cmd === `${prefix}skip`){
+    var server = servers[message.guild.id];
+
+    if(server.dispatcher) server.dispatcher.end();
+  }
+
+  if(cmd === `${prefix}stop`){
+    var server = servers[message.guild.id];
+
+    if(message.guild.VoiceConnection) message.guild.VoiceConnection.disconnect();
+  }
 
 
   if(cmd === `${prefix}say`){

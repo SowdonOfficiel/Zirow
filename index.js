@@ -320,14 +320,12 @@ bot.on("message", async message => {
 
       message.channel.send(ssembed);
 
-     
+
       } else {
 
         message.channel.send('**This user isn\'t listening to Spotify!**');
 
       }
-
-    }
 
   }
 

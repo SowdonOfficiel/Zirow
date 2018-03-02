@@ -14,6 +14,8 @@ const makeURL = (city) => `https://query.yahooapis.com/v1/public/yql?q=select%20
 const celsius = (fahrenheit) => Math.round(((fahrenheit - 32) * 5) / 9);
 bot.commands = new Discord.Collection();
 let coins = require("./coins.json");
+const Fortnite = require('fortnite');
+const stats = new Fortnite(process.env.TRN);
 
 const spacer = {
     name: '\u200b',
@@ -57,30 +59,30 @@ bot.on("message", async message => {
   if(message.author.bot) return;
   if(message.channel.type === "dm") return;
 
-  if(!coins[message.author.id]){
-    coins[message.author.id] = {
-      coins: 0
-    };
-  }
-
-  let coinAmt = Math.floor(Math.random() * 15) + 1;
-  let baseAmt = Math.floor(Math.random() * 15) + 1;
-  console.log(`${coinAmt} ; ${baseAmt}`);
-
-  if(coinAmt === baseAmt){
-    coins[message.author.id] = {
-      coins: coins[message.author.id].coins + coinAmt
-    };
-  fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
-    if (err) console.log(err)
-  });
-  let coinEmbed = new Discord.RichEmbed()
-  .setAuthor(message.author.username)
-  .setColor("#0000FF")
-  .addField("💸", `${coinsAmt} coins ajouté`);
-
-  message.channel.send(coinEmbed).then(msg => {msg.delete(5000)})
-  }
+  // if(!coins[message.author.id]){
+  //   coins[message.author.id] = {
+  //     coins: 0
+  //   };
+  // }
+  //
+  // let coinAmt = Math.floor(Math.random() * 15) + 1;
+  // let baseAmt = Math.floor(Math.random() * 15) + 1;
+  // console.log(`${coinAmt} ; ${baseAmt}`);
+  //
+  // if(coinAmt === baseAmt){
+  //   coins[message.author.id] = {
+  //     coins: coins[message.author.id].coins + coinAmt
+  //   };
+  // fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
+  //   if (err) console.log(err)
+  // });
+  // let coinEmbed = new Discord.RichEmbed()
+  // .setAuthor(message.author.username)
+  // .setColor("#0000FF")
+  // .addField("💸", `${coinsAmt} coins ajouté`);
+  //
+  // message.channel.send(coinEmbed).then(msg => {msg.delete(5000)})
+  // }
 
   let prefix = botconfig.prefix;
   let messageArray = message.content.split(" ");
@@ -152,23 +154,23 @@ bot.on("message", async message => {
 
   }
 
-  if(cmd === `${prefix}coins`){
-    if(!coins[message.author.id]){
-      coins[message.author.id] = {
-        coins: 0
-      };;
-    }
-
-    let uCoins = coins[message.author.id].coins;
-    let picon = message.author.avatarURL;
-
-    let coinEmbed = new Discord.RichEmbed()
-    .setColor("#00FF00")
-    .setThumbnail(picon)
-    .addField("💸 Vous avez " + uCoins + " coins sur votre compte.");
-
-    message.channel.send(coinEmbed);
-  }
+  // if(cmd === `${prefix}coins`){
+  //   if(!coins[message.author.id]){
+  //     coins[message.author.id] = {
+  //       coins: 0
+  //     };;
+  //   }
+  //
+  //   let uCoins = coins[message.author.id].coins;
+  //   let picon = message.author.avatarURL;
+  //
+  //   let coinEmbed = new Discord.RichEmbed()
+  //   .setColor("#00FF00")
+  //   .setThumbnail(picon)
+  //   .addField("💸 Vous avez " + uCoins + " coins sur votre compte.");
+  //
+  //   message.channel.send(coinEmbed);
+  // }
 
   if(cmd === `${prefix}report`){
     let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
@@ -253,6 +255,47 @@ bot.on("message", async message => {
     })
 
     return;
+  }
+
+  if(cmd === `${prefix}fortnite`){
+    let platform;
+    let username;
+
+    if (!['pc','xbl','psn'].includes(args[0])) return message.channel.send('**Merci de préciser la platforme: `-fortnite [ pc | xbl | psn ] <pseudo>`**');
+
+    if (!args[1]) return message.channel.send('**Merci de préciser le nom de la personne: `-fortnite [ pc | xbl | psn ] <pseudo>`**');
+
+    platform = args.shift();
+    username = args.join(' ');
+
+    stats.getInfo(username, platform).then( data => {
+   
+    const fembed = new Discord.MessageEmbed()
+      .setColor(0xffffff)
+      .setTitle(`Statistique de ${data.username}`)
+      .setDescription(`**Podium**\n\n**Top 3s:** *${data.lifetimeStats[0].value}*\n**Top 5s:** *${data.lifetimeStats[1].value}*\n**Top 6s:** *${data.lifetimeStats[3].value}*\n**Top 12s:** *${data.lifetimeStats[4].value}*\n**Top 25s:** *${data.lifetimeStats[5].value}*`, true)
+      .setThumbnail('https://vignette.wikia.nocookie.net/fortnite/images/d/d8/Icon_Founders_Badge.png')
+      .addField('Score total', data.lifetimeStats[6].value, true)
+      .addField('Match jouer', data.lifetimeStats[7].value, true)
+      .addField('Wins', data.lifetimeStats[8].value, true)
+      .addField('Win pourcentage', data.lifetimeStats[9].value, true)
+      .addField('Kills', data.lifetimeStats[10].value, true)
+      .addField('K/D Ratio', data.lifetimeStats[11].value, true)
+      .addField('Kills par minute', data.lifetimeStats[12].value, true)
+      .addField('Temps de jeu', data.lifetimeStats[13].value, true)
+      .addField('Temps de survie', data.lifetimeStats[14].value, true)
+   
+    message.channel.send(fembed)
+     
+   
+  })
+  .catch(error => {
+   
+    message.channel.send('Pseudo incorrect');
+ 
+  })
+
+    
   }
 
   if(cmd === `${prefix}ban`){
@@ -411,4 +454,5 @@ bot.on("message", async message => {
     });
   }
 
-bot.login(process.env.TOKEN);
+//bot.login(process.env.TOKEN);
+bot.login("NDE3NjQ5MDIxOTUyMTk2NjA4.DXl_Sg.TUl6BFcQjzPg5hZIUQY8qShmbqc");

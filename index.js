@@ -269,7 +269,7 @@ bot.on("message", async message => {
     username = args.join(' ');
 
     stats.getInfo(username, platform).then( data => {
-   
+
     const fembed = new Discord.MessageEmbed()
       .setColor(0xffffff)
       .setTitle(`Statistique de ${data.username}`)
@@ -284,18 +284,51 @@ bot.on("message", async message => {
       .addField('Kills par minute', data.lifetimeStats[12].value, true)
       .addField('Temps de jeu', data.lifetimeStats[13].value, true)
       .addField('Temps de survie', data.lifetimeStats[14].value, true)
-   
+
     message.channel.send(fembed)
-     
-   
+
+
   })
   .catch(error => {
-   
+
     message.channel.send('Pseudo incorrect');
- 
+
   })
 
-    
+
+  }
+
+  if(cmd === `${prefix}spotify`){
+
+    let user = message.mentions.users.first() || message.author;
+    if (user.presence.activity !== null && user.presence.activity.type === 'LISTENING' && user.presence.activity.name === 'Spotify' && user.presence.activity.assets !== null) {
+
+      let trackIMG = `https://i.scdn.co/image/${user.presence.activity.assets.largeImage.slice(8)}`;
+      let trackURL = `https://open.spotify.com/track/${user.presence.activity.syncID}`;
+      let trackName = user.presence.activity.details;
+      let trackAuthor = user.presence.activity.state;
+      let trackAlbum = user.presence.activity.assets.largeText;
+
+      const ssembed = new Discord.MessageEmbed()
+        .setAuthor('Spotify play Info', 'https://cdn.discordapp.com/emojis/408668371039682560.png')
+        .setColor(0x1ED760)
+        .setThumbnail(trackIMG)
+        .addField('Musique :', trackName, true)
+        .addField('Album :', trackAlbum, true)
+        .addField('Auteur :', trackAuthor, false)
+        .addField('Écoute la piste :', `[\`${trackURL}\`](trackURL)`, false);
+
+      message.channel.send(ssembed):
+
+     
+      } else {
+
+        message.channel.send('**This user isn\'t listening to Spotify!**');
+
+      }
+
+    }
+
   }
 
   if(cmd === `${prefix}ban`){
@@ -454,5 +487,4 @@ bot.on("message", async message => {
     });
   }
 
-//bot.login(process.env.TOKEN);
-bot.login("NDE3NjQ5MDIxOTUyMTk2NjA4.DXl_Sg.TUl6BFcQjzPg5hZIUQY8qShmbqc");
+bot.login(process.env.TOKEN);

@@ -1,6 +1,6 @@
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
-const bot = new Discord.Client({disableEveryone: true});
+const bot = new Discord.Client({disableEveryone: false});
 const fs = require("fs");
 const { createServer } = require('http')
 const got = require('got');
@@ -17,6 +17,8 @@ let coins = require("./coins.json");
 const Fortnite = require('fortnite');
 const stats = new Fortnite(process.env.TRN);
 const ms = require("ms");
+
+//let userData = JSON.parse(fs.readFileSync('Storage/userData.json', 'utf8'));
 
 const spacer = {
     name: '\u200b',
@@ -51,7 +53,15 @@ createServer((_, res) => {
 
 bot.on("ready", async () => {
   console.log(`${bot.user.username} est connecte sur ${bot.guilds.size} serveurs !`);
-  bot.user.setPresence({game: { name: 'Version : ALPHA-0.5', type: 0} });
+  bot.user.setPresence({game: { name: 'Version : ALPHA-0.6', type: 0} });
+});
+
+bot.on("guildCreate", guild => {
+  console.log(`Zirow vient d'être ajouté sur ${guild.name} (id: ${guild.id}). La guild possède ${guild.memberCount} members!`);
+});
+
+bot.on("guildDelete", guild => {
+  console.log(`Zirow à été remove de ${guild.name} (id: ${guild.id})`);
 });
 
 
@@ -60,86 +70,36 @@ bot.on("message", async message => {
   if(message.author.bot) return;
   if(message.channel.type === "dm") return;
 
-  // if(!coins[message.author.id]){
-  //   coins[message.author.id] = {
-  //     coins: 0
-  //   };
-  // }
-  //
-  // let coinAmt = Math.floor(Math.random() * 15) + 1;
-  // let baseAmt = Math.floor(Math.random() * 15) + 1;
-  // console.log(`${coinAmt} ; ${baseAmt}`);
-  //
-  // if(coinAmt === baseAmt){
-  //   coins[message.author.id] = {
-  //     coins: coins[message.author.id].coins + coinAmt
-  //   };
-  // fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
-  //   if (err) console.log(err)
-  // });
-  // let coinEmbed = new Discord.RichEmbed()
-  // .setAuthor(message.author.username)
-  // .setColor("#0000FF")
-  // .addField("💸", `${coinsAmt} coins ajouté`);
-  //
-  // message.channel.send(coinEmbed).then(msg => {msg.delete(5000)})
-  // }
-
+  let sender = message.author;
   let prefix = botconfig.prefix;
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
 
-
-  // let commandfile = bot.commands.get(cmd.slice(prefix.lenght));
-  // if(commandfile) commandfile.run(bot,message,args);
-
   if (message.content === 'ping' || message.content == 'Ping') {
-    message.channel.send('pong');
+      message.channel.send('pong');
   }
 
   if (message.content === 'hey') {
     message.channel.send('coucou');
   }
 
-  // if(cmd === `${prefix}play`){
-  //   if(!args[0]) {
-  //     message.channel.sendMessage("Merci de préciser un lien !");
-  //     return;
-  //   }
-  //
-  //   if(!message.member.voiceChannel){
-  //     message.channel.sendMessage("Merci de vous connecter dans un channel vocal !");
-  //     return;
-  //   }
-  //
-  //   if(!servers[message.guild.id]) servers[message.guild.id] = {
-  //     queue: []
-  //   };
-  //
-  //   var server = servers[message.guild.id];
-  //
-  //   server.queue.push(args[1]);
-  //
-  //   if(!message.guild.VoiceConnection) message.member.voiceChannel.join().then(function(connection){
-  //     play(connection, message);
-  //   });
-  //
-  // }
-  //
-  //
-  // if(cmd === `${prefix}skip`){
-  //   var server = servers[message.guild.id];
-  //
-  //   if(server.dispatcher) server.dispatcher.end();
-  // }
-  //
-  // if(cmd === `${prefix}stop`){
-  //   var server = servers[message.guild.id];
-  //
-  //   if(message.guild.VoiceConnection) message.guild.VoiceConnection.disconnect();
-  // }
+  if (message.content.includes("https://")) {
+   console.log("deleted " + message.content + " from " + message.author)
+   message.delete(1);
+   message.author.send("⛔ **[WARN]** *La pub est strictement interdit !*");
+ }
+ if (message.content.includes("http://")) {
+   console.log("deleted " + message.content + " from " + message.author)
+   message.delete(1);
+   message.author.send("⛔ **[WARN]** *La pub est strictement interdit !*");
+ }
+ if (message.content.includes("www.")) {
+   console.log("deleted " + message.content + " from " + message.author)
+   message.delete(1);
+   message.author.send("⛔ **[WARN]** *La pub est strictement interdit !*");
+ }
 
 
   if(cmd === `${prefix}say`){
@@ -155,23 +115,35 @@ bot.on("message", async message => {
 
   }
 
-  // if(cmd === `${prefix}coins`){
-  //   if(!coins[message.author.id]){
-  //     coins[message.author.id] = {
-  //       coins: 0
-  //     };;
-  //   }
-  //
-  //   let uCoins = coins[message.author.id].coins;
-  //   let picon = message.author.avatarURL;
-  //
-  //   let coinEmbed = new Discord.RichEmbed()
-  //   .setColor("#00FF00")
-  //   .setThumbnail(picon)
-  //   .addField("💸 Vous avez " + uCoins + " coins sur votre compte.");
-  //
-  //   message.channel.send(coinEmbed);
-  // }
+  if(cmd === `${prefix}annonce`){
+    let annonce = args.join(" ");
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission pour envoyer des annonces !");
+    let annonceEmbed = new Discord.MessageEmbed()
+    .setDescription("**Annonce >** " + message.createdAt + "\n\n\n\n *>* " + annonce + " \n\n\n\n\n\n *Annonce by* " + message.author.username)
+    .setColor("#FFFFFF");
+
+
+    message.delete().catch(O_o=>{});
+    return message.channel.send(annonceEmbed) && message.channel.send("@everyone");
+  }
+
+  if(cmd === `${prefix}sondage`){
+    let sondage = args.join(" ");
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Vous n'avez pas la permission de faire des sondages !");
+    let sondageEmbed = new Discord.MessageEmbed()
+    .setDescription("**Sondage** \n\n🔷 " + sondage + " \n\n ***sondage fait le :*** " + message.createdAt)
+    .setColor("#FFFFFF");
+
+    message.delete().catch(O_o=>{});
+
+    return message.channel.send(sondageEmbed).then(function (message) {
+        message.react("👍")
+        message.react("👎")
+        }).catch(function() {
+      });
+
+  }
+
 
   if(cmd === `${prefix}report`){
     let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
@@ -188,13 +160,38 @@ bot.on("message", async message => {
     .addField("Time", message.createdAt);
 
     let reportschannel = message.guild.channels.find(`name`, `reports`);
-    if(!reportschannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
+    if(!reportschannel) return message.guild.channel.send("Pour faire fonctionner la commande de ban, merci de créer un channel **#reports**");
 
     message.delete().catch(O_o=>{});
 
     reportschannel.send(reportEmbed);
 
   }
+
+  // if(cmd === `${prefix}unban`){
+  //
+  //   let reason = args.slice(1).join(' ');
+  //   let user = args[0];
+  //   let logchannel = message.guild.channels.find(`name`, `logs`);
+  //   if(!logchannel) return message.guild.channel.send("Erreur, merci de créer un channel #logs !");
+  //   if (reason.lenght < 1) return message.reply('Merci de préciser un raison pour le unban.');
+  //   if(!user) return message.reply('Merci de préciser un id valide ( -id @lapersonne ) !').catch(console.error);
+  //
+  //   // let unbanEmbed = new Discord.MessageEmbed()
+  //   // .setDescription("๑۩۞۩๑ LOG - Unban (Discord) ๑۩۞۩๑")
+  //   // .setColor("#e56b00")
+  //   // .addField("Unban user", `${user} with ID ${user.id}`)
+  //   // .addField("Unban by", `<@${message.author.id}> with ID ${message.author.id}`)
+  //   // .addField("Raison", reason)
+  //   // .addField("Time", message.createdAt);
+  //
+  //   message.delete().catch(O_o=>{});
+  //
+  //   // message.guild.unban(user);
+  //   //logchannel.send(unbanEmbed);
+  //
+  //
+  // }
 
   if(cmd === `${prefix}kick`){
     let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
@@ -211,10 +208,8 @@ bot.on("message", async message => {
     .addField("Raison", kReason)
     .addField("Time", message.createdAt);
 
-    //message.guild.member(kUser).sendMessage("Vous avez était kick du discord de **MinithMc** ! Pour :", kReason);
-
     let logchannel = message.guild.channels.find(`name`, `logs`);
-    if(!logchannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
+    if(!logchannel) return message.guild.channel.send("Pour faire fonctionner la commande de ban, merci de créer un channel **#logs**");
 
     message.delete().catch(O_o=>{});
 
@@ -245,14 +240,14 @@ bot.on("message", async message => {
       let helpEmbed1 = new Discord.MessageEmbed()
       .setColor(0xffffff)
       .setTitle(`Aide concernant Zirow (Partit 1) :`)
-      .setDescription(`**-help** \n *Permet d'obtenir cette aide.* \n\n \n\n **-mute @lapersonne <temps>** \n *Permet de mute quelqu'un temporairement.* \n\n **-kick @lapersonne <raison>** \n *Permet de kick quelqu'un du discord.* \n\n **-ban @lapersonne <raison>** \n *Permet de bannir quelqu'un du discord* \n\n **-clear <nb. message>** \n *Permet de clear des messages.* \n\n **-report @lapersonne <raison>** \n *Permet de report quelqu'un.* \n\n \n\n **-gif <type>** \n *Permet de générer un gif. \n\n **-shoot @lapersonne** \n *Permet de kill la personne. \n\n **-avatar @lapersonne** \n *Permet d'obtenir l'avatar de la personne* \n\n **-météo <la ville>** \n *Permet d'obtenir la météo de la ville / village.* \n\n **-fortnite @lapersonne** \n *Permet d'obtenir les statistiques fortnite de la personne.* \n\n **-spotify @lapersonne** \n *Permet d'obtenir des informations sur la musique d'un personne.* \n\n **-flip <text>** \n *Permet d'écrire à l'envers.*`);
+      .setDescription(`**-help** \n *Permet d'obtenir cette aide.* \n\n \n\n **-mute @lapersonne <temps>** \n *Permet de mute quelqu'un temporairement.* \n\n **-kick @lapersonne <raison>** \n *Permet de kick quelqu'un du discord.* \n\n **-ban @lapersonne <raison>** \n *Permet de bannir quelqu'un du discord* \n\n **-clear <nb. message>** \n *Permet de clear des messages.* \n\n **-report @lapersonne <raison>** \n *Permet de report quelqu'un.* \n\n **-annonce <text>** \n *Permet de réaliser une annonce.* \n\n **-sondage <sondage>** \n *Permet de réaliser un sondage.* \n\n \n\n **-gif <type>** \n *Permet de générer un gif. \n\n **-shoot @lapersonne** \n *Permet de kill la personne. \n\n **-avatar @lapersonne** \n *Permet d'obtenir l'avatar de la personne* \n\n **-météo <la ville>** \n *Permet d'obtenir la météo de la ville / village.* \n\n **-fortnite @lapersonne** \n *Permet d'obtenir les statistiques fortnite de la personne.*`);
 
       message.author.send(helpEmbed1);
 
       let helpEmbed2 = new Discord.MessageEmbed()
       .setColor(0xffffff)
       .setTitle(`Aide concernant Zirow (Partit 2) :`)
-      .setDescription(`\n\n **-shorturl <url>** \n *Permet de réduire la taille de l'url.* \n\n **-info** \n *Permet d'obtenir des informations sur cette guild.* \n\n **-discord** \n *Permet d'obtenir le discord de Zirow*`);
+      .setDescription('**-spotify @lapersonne** \n *Permet de se renseigner sur la musique.* \n\n **-shorturl <url>** \n *Permet de réduire la taille de votre lien.* \n\n \n\n **-info** \n *Permet de se renseigner sur cette guild.* \n\n **-discord** \n *Permet d\'obtenir le lien du discord de Zirow* \n\n **-site** \n *Permet d\'obtenir le lien du site de Zirow*');
 
       message.author.send(helpEmbed2);
 
@@ -323,22 +318,22 @@ bot.on("message", async message => {
 
     const andaryEmbed = new Discord.MessageEmbed()
     .setColor(0xffffff)
-    .setDescription(`Andary est un serveur PvpFaction. \n\n Joueurs connectées : **${res.body}** / **${res1.body}** \n\n Temps de réponse d'andary : **${res2.body} ms** \n\n Version d'andary : **${res3.body}** \n\n\n\n Andary est partenariat avec Zirow.`);
+    .setDescription(`:pick: *Andary est un serveur Faction / Mini-Jeux présentant des créations originales et uniques.* \n\n\n\n 🔷 Discord : https://discord.gg/T7m3n7x \n 🔷 Site web : https://andarygames.fr \n 🔷 Chaîne YouTube : https://goo.gl/Rn89dV \n 🔷 Twitter : https://twitter.com/Andary97773388?lang=en \n 🔷 TeamSpeak : ts.andarygames.fr \n\n\n\n Joueurs connectées : **${res.body}** / **${res1.body}** \n\n Temps de réponse d'andary : **${res2.body} ms** \n\n Version d'andary : **${res3.body}** \n\n Adresse d'andary : **play.andarygames.fr** \n\n\n\n *Andary est en partenariat avec Zirow.*`);
     message.channel.send(andaryEmbed);
 
   }
 
-  if(cmd === `${prefix}mcskin`){
+  if(cmd === `${prefix}mcuuid`){
     if (args.length < 1) {
         throw 'Merci de préciser un pseudo !';
     }
 
-    const res = await got(`http://minecraft-api.com/api/skins/skins.php?player=${args[1]}`);
+    const res = await got(`http://minecraft-api.com/api/uuid/uuid.php?pseudo=${args[0]}`);
 
     message.delete().catch(O_o=>{});
-    return message.channel.send(res.body.data.image_url);
+    return message.channel.send("L'uuid de **" + args[0] + "** est " + res.body);
   }
-  
+
 
   if(cmd === `${prefix}shorturl`){
     if (args.length < 1) {
@@ -403,7 +398,7 @@ bot.on("message", async message => {
     //message.guild.member(bUser).send("Vous avez était ban du discord de **MinithMc** ! Pour :", bReason);
 
     let logchannel = message.guild.channels.find(`name`, `logs`);
-    if(!logchannel) return message.guild.channel.send("Erreur, merci de contacter Sowdon !");
+    if(!logchannel) return message.guild.channel.send("Pour faire fonctionner la commande de ban, merci de créer un channel **#logs**");
 
     message.delete().catch(O_o=>{});
 
